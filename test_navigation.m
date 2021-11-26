@@ -12,21 +12,24 @@ function [X, Y, Heading] = test_navigation(time, gamma1, gamma2, Gyro, Lat, Lon,
     
     
     % init sensors struct
-    sensors.gps_error_pos = 3e0;
+    sensors.gps_error_pos = 6e-1;
     sensors.gps_error_vel = 6e-1;
     sensors.gyro_error = 4e-1;
-    sensors.odo_error = 1e0;%8e-1;
+    sensors.odo_error = 2e0;%8e-1;
     
     %init Kalman state struct
     kalman_state.X = zeros(9,1);
-    kalman_state.X(3) = 240*pi/180; % set initial heading
+    kalman_state.X(3) = 260*pi/180; % set initial heading
+%     kalman_state.X(3) = 65*pi/180; % set initial heading
     kalman_state.P = diag([100 100 10 10 10 10 10 10 10]);
     % errors:
-    kalman_state.pos = 2e-5;
+    kalman_state.pos = 5e-2;
     kalman_state.h = 1e-4;
     kalman_state.v = 3e-3;
-    kalman_state.dh = 8e-4;
+    kalman_state.dh = 3e-4;
     kalman_state.odo = 1e-2;%8e-3;
+    
+    
     
     for i = 1:len
         if i > 1
@@ -98,7 +101,7 @@ function [X, Y, Heading] = test_navigation(time, gamma1, gamma2, Gyro, Lat, Lon,
         update.gyro = 1;
         % DEBUG
 %         update.gps = 0;
-%         update.gyro = 0;
+        update.gyro = 0;
         
         kalman_state = ukfNav(kalman_state, sensors, update);
         X(i) = kalman_state.X(1);
@@ -108,14 +111,18 @@ function [X, Y, Heading] = test_navigation(time, gamma1, gamma2, Gyro, Lat, Lon,
     end
     close all
     
+    [North, East] = gps2meters(Lat, Lon);
+    
     figure
-    plot(Y,X, 'b', 'LineWidth', 2);
+    plot(Y, X, 'b', 'LineWidth', 2);
     axis equal;
     grid on;
+    hold on;
+    plot(East, North, 'k', 'LineWidth', 0.5);
     xlabel('Y, m')
     ylabel('X, m')
     
-    figure;
-    plot(Heading)
-    grid on
+%     figure;
+%     plot(Heading)
+%     grid on
 end

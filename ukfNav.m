@@ -3,12 +3,12 @@ function state_prime = ukfNav(state, sensors, update)
     dt = sensors.dt;
     tangf = tan(sensors.gammaf);
     tangr = tan(sensors.gammar);
-    lsx = 0.15;
-    lsy = 0.05;
+    lsx = -0.5;
+    lsy = 0.0;
     lf = 0.4;
-    lr = 0.4;
-    lw = 0.3;
-    rw = 0.1;
+    lr = 0.45;
+    lw = 0.625;
+    rw = 0.254/2;
     U = [state.pos state.pos state.h state.v state.dh state.odo state.odo state.odo state.odo];
     
     
