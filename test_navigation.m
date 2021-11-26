@@ -9,13 +9,14 @@ function [X, Y, Heading] = test_navigation(time, gamma1, gamma2, Gyro, Lat, Lon,
     X = zeros(len, 1);
     Y = zeros(len, 1);
     Heading = zeros(len, 1);
+    Anr = zeros(len, 1);
     
     
     % init sensors struct
-    sensors.gps_error_pos = 6e-1;
-    sensors.gps_error_vel = 6e-1;
-    sensors.gyro_error = 4e-1;
-    sensors.odo_error = 2e0;%8e-1;
+    sensors.gps_error_pos = 1e-1;
+    sensors.gps_error_vel = 1e-1;
+    sensors.gyro_error = 2e-1;
+    sensors.odo_error = 1e0;%8e-1;
     
     %init Kalman state struct
     kalman_state.X = zeros(9,1);
@@ -101,17 +102,18 @@ function [X, Y, Heading] = test_navigation(time, gamma1, gamma2, Gyro, Lat, Lon,
         update.gyro = 1;
         % DEBUG
 %         update.gps = 0;
-        update.gyro = 0;
+%         update.gyro = 0;
         
         kalman_state = ukfNav(kalman_state, sensors, update);
         X(i) = kalman_state.X(1);
         Y(i) = kalman_state.X(2);
-        Heading(i) = kalman_state.X(3);
+        Heading(i) = wrapToPi(kalman_state.X(3));
+        Anr(i) = kalman_state.X(5);
         
     end
     close all
     
-    [North, East] = gps2meters(Lat, Lon);
+    [North, East, Head, Rot] = gps2meters(Lat, Lon);
     
     figure
     plot(Y, X, 'b', 'LineWidth', 2);
@@ -122,7 +124,15 @@ function [X, Y, Heading] = test_navigation(time, gamma1, gamma2, Gyro, Lat, Lon,
     xlabel('Y, m')
     ylabel('X, m')
     
-%     figure;
-%     plot(Heading)
-%     grid on
+    figure;
+    plot(time, Heading, 'b')
+    hold on;
+    grid on
+    plot(time, Head, 'k');
+    
+    figure;
+    plot(time, Anr, 'b')
+    hold on;
+    grid on
+    plot(time, Rot, 'k');
 end
