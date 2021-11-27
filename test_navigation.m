@@ -13,8 +13,8 @@ function [X, Y, Heading] = test_navigation(time, gamma1, gamma2, Gyro, Lat, Lon,
     
     
     % init sensors struct
-    sensors.gps_error_pos = 1e-1;
-    sensors.gps_error_vel = 1e-1;
+    sensors.gps_error_pos = 2e-1;
+    sensors.gps_error_vel = 6e-1;
     sensors.gyro_error = 2e-1;
     sensors.odo_error = 1e0;%8e-1;
     
