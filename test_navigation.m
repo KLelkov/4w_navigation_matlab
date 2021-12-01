@@ -1,5 +1,6 @@
 function [X, Y, Heading] = test_navigation(time, gamma1, gamma2, Gyro, Lat, Lon, Vn, Ve, w1, w2, w3, w4)
-    len = length(time);
+
+len = length(time);
     referenceNeeded = true;
     notMovedYet = true;
     validCoords = false;
@@ -13,9 +14,9 @@ function [X, Y, Heading] = test_navigation(time, gamma1, gamma2, Gyro, Lat, Lon,
     
     
     % init sensors struct
-    sensors.gps_error_pos = 2e-1;
-    sensors.gps_error_vel = 6e-1;
-    sensors.gyro_error = 2e-1;
+    sensors.gps_error_pos = 5e-1;
+    sensors.gps_error_vel = 7e-1;
+    sensors.gyro_error = 8e-2;
     sensors.odo_error = 1e0;%8e-1;
     
     %init Kalman state struct
@@ -24,10 +25,10 @@ function [X, Y, Heading] = test_navigation(time, gamma1, gamma2, Gyro, Lat, Lon,
 %     kalman_state.X(3) = 65*pi/180; % set initial heading
     kalman_state.P = diag([100 100 10 10 10 10 10 10 10]);
     % errors:
-    kalman_state.pos = 5e-2;
+    kalman_state.pos = 1e-1;
     kalman_state.h = 1e-4;
     kalman_state.v = 3e-3;
-    kalman_state.dh = 3e-1;
+    kalman_state.dh = 5e-2;
     kalman_state.odo = 1e-2;%8e-3;
     
     
@@ -138,4 +139,25 @@ function [X, Y, Heading] = test_navigation(time, gamma1, gamma2, Gyro, Lat, Lon,
     plot(time, Rot, 'k');
     plot(time, -Gyro, 'r');
     legend filter raw gyro
+    
+    figure;
+    plot(time, Anr, 'b')
+    hold on;
+    grid on
+    plot(time, gamma1*pi/180, 'r');
+    plot(time, gamma2*pi/180, 'g');
+    plot(time, -Gyro, 'k');
+    legend filter_anr gamma1 gamma2 gyro
+    
+    figure('Name', 'Localization Error');
+    Err = zeros(len, 1);
+    for i = 1 : len
+        Ey = Y(i) - East(i);
+        Ex = X(i) - North(i);
+        Err(i) = sqrt(Ey^2 + Ex^2);
+    end
+    
+    plot(time, Err, 'b', 'LineWidth', 2)
+    grid on
+
 end

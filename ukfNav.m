@@ -96,7 +96,7 @@ function state_prime = ukfNav(state, sensors, update)
     X = Xprime;
     
     %% Correction
-%     
+%%  UKF    
 %     % Apply H to Xs to get predicted measurement Z
 %     if update.gyro == 1 && update.gps == 1
 %         dimz = 9;
@@ -208,7 +208,7 @@ function state_prime = ukfNav(state, sensors, update)
 %     Xprime = X + K*(Z - Zhat);
 %     Pprime = P - K*S*K';
     
-%%
+%% Forward
     heading = X(3);
     xproj = lsx*cos(heading) - lsy*sin(heading);
     yproj = lsx*sin(heading) + lsy*cos(heading);
