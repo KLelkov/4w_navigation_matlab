@@ -94,6 +94,7 @@ function state_prime = ukfNav(state, sensors, update)
 
     P = Pprime;
     X = Xprime;
+    X(3) = wrapToPi(X(3));
     
     %% Correction
 %%  UKF    
@@ -212,10 +213,11 @@ function state_prime = ukfNav(state, sensors, update)
     heading = X(3);
     xproj = lsx*cos(heading) - lsy*sin(heading);
     yproj = lsx*sin(heading) + lsy*cos(heading);
+    
     if update.gyro == 1 && update.gps == 1
         %     X  Y  H.            V     dH. w1 w2 w3 w4
-        H = [ 1, 0, 0,            0,     0, 0, 0, 0, 0; % Xs
-              0, 1, 0,            0,     0, 0, 0, 0, 0; % Ys
+        H = [ 0, 0, 0,            0,     0, 0, 0, 0, 0; % Xs
+              0, 0, 0,            0,     0, 0, 0, 0, 0; % Ys
               0, 0, 0, cos(heading), xproj, 0, 0, 0 ,0; % dXs
               0, 0, 0, sin(heading), yproj, 0, 0, 0, 0; % dYs
               0, 0, 0,            0,     1, 0, 0, 0, 0; % dHeading_gyro
@@ -286,6 +288,15 @@ function state_prime = ukfNav(state, sensors, update)
         R = diag([sensors.odo_error sensors.odo_error sensors.odo_error sensors.odo_error]);
     end
     
+    if sqrt(sensors.gps_dx^2 + sensors.gps_dy^2) > 0.3 && update.gps == 1
+        Z(end+1) = atan2(sensors.gps_dy, sensors.gps_dx);
+        H(end+1, :) = [0, 0, 1, 0, 0, 0, 0, 0, 0];
+        R(end+1, end+1) = sensors.gps_heading_error;
+%         Z1 = atan2(sensors.gps_dy, sensors.gps_dx);
+%         H1 = [0, 0, 1, 0, 0, 0, 0, 0, 0];
+%         R1 = sensors.gps_heading_error;
+    end
+    
     
     y = Z - H*X; % невязка
     S = H * P * H' + R; 
@@ -293,6 +304,7 @@ function state_prime = ukfNav(state, sensors, update)
     Xprime = X + K*y; % X'
     Pprime = (eye(9) - K*H)*P; % P'
     
+    Xprime(3) = wrapToPi(Xprime(3));
     state_prime = state;
     state_prime.P = Pprime;
     state_prime.X = Xprime;

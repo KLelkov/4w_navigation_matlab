@@ -11,8 +11,9 @@ while (~ start_point_found)
 end
 Lat = GpsLat(gps_starter:nSim);
 Lon = GpsLon(gps_starter:nSim);
-Vn = gpsVx(gps_starter:nSim);
-Ve = gpsVy(gps_starter:nSim);
+% TAKE CARE, GPS VELOCITY IS REVERSED
+Vn = gpsVy(gps_starter:nSim);
+Ve = gpsVx(gps_starter:nSim);
 Gyro = LocWx(gps_starter:nSim);
 Gamma1 = GammaF(gps_starter:nSim);
 Gamma2 = GammaR(gps_starter:nSim);

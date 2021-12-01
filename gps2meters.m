@@ -1,4 +1,4 @@
-function [North, East, Heading, Rotation] = gps2meters(lat, lon)
+function [North, East, Heading, Rotation, Vn, Ve] = gps2meters(lat, lon)
 % Heading and Rotation speed approximation can be a little chunky, but it should give the general idea about how the robot was really moving
     len = length(lat);
     North = zeros(len, 1);
