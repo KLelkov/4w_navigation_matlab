@@ -216,8 +216,8 @@ function state_prime = ukfNav(state, sensors, update)
     
     if update.gyro == 1 && update.gps == 1
         %     X  Y  H.            V     dH. w1 w2 w3 w4
-        H = [ 0, 0, 0,            0,     0, 0, 0, 0, 0; % Xs
-              0, 0, 0,            0,     0, 0, 0, 0, 0; % Ys
+        H = [ 1, 0, 0,            0,     0, 0, 0, 0, 0; % Xs
+              0, 1, 0,            0,     0, 0, 0, 0, 0; % Ys
               0, 0, 0, cos(heading), xproj, 0, 0, 0 ,0; % dXs
               0, 0, 0, sin(heading), yproj, 0, 0, 0, 0; % dYs
               0, 0, 0,            0,     1, 0, 0, 0, 0; % dHeading_gyro
@@ -288,7 +288,7 @@ function state_prime = ukfNav(state, sensors, update)
         R = diag([sensors.odo_error sensors.odo_error sensors.odo_error sensors.odo_error]);
     end
     
-    if sqrt(sensors.gps_dx^2 + sensors.gps_dy^2) > 0.3 && update.gps == 1
+    if sqrt(sensors.gps_dx^2 + sensors.gps_dy^2) > 0.2 && update.gps == 1
         Z(end+1) = atan2(sensors.gps_dy, sensors.gps_dx);
         H(end+1, :) = [0, 0, 1, 0, 0, 0, 0, 0, 0];
         R(end+1, end+1) = sensors.gps_heading_error;

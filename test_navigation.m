@@ -14,11 +14,11 @@ len = length(time);
     
     
     % init sensors struct
-    sensors.gps_error_pos = 5e-1;
-    sensors.gps_error_vel = 7e-1;
+    sensors.gps_error_pos = 4e-1;
+    sensors.gps_error_vel = 8e-1;
     sensors.gyro_error = 8e-2;
     sensors.odo_error = 1e0;%8e-1;
-    sensors.gps_heading_error = 5e-4;
+    sensors.gps_heading_error = 8e-2;
     
     %init Kalman state struct
     kalman_state.X = zeros(9,1);
@@ -26,8 +26,8 @@ len = length(time);
 %     kalman_state.X(3) = 65*pi/180; % set initial heading
     kalman_state.P = diag([100 100 10 10 10 10 10 10 10]);
     % errors:
-    kalman_state.pos = 1e-1;
-    kalman_state.h = 1e-1;
+    kalman_state.pos = 6e-2;
+    kalman_state.h = 4e-2;
     kalman_state.v = 3e-3;
     kalman_state.dh = 5e-2;
     kalman_state.odo = 1e-2;%8e-3;
@@ -123,8 +123,10 @@ len = length(time);
     grid on;
     hold on;
     plot(East, North, 'k', 'LineWidth', 0.5);
-    xlabel('Y, m')
-    ylabel('X, m')
+    xlabel('Y_g (East), m')
+    ylabel('X_g (North), m')
+    legend UKF GPS
+    
     
     figure;
     plot(time, Heading, 'b')
@@ -161,17 +163,17 @@ len = length(time);
     plot(time, Err, 'b', 'LineWidth', 2)
     grid on
     
-    figure('Name', 'Heading Error');
-    Herr = wrapToPi(Heading - Head);
-    plot(time, Herr*180/pi, 'b', 'LineWidth', 2)
-    grid on
-    ylim([-90 90])
+%     figure('Name', 'Heading Error');
+%     Herr = wrapToPi(Heading - Head);
+%     plot(time, Herr*180/pi, 'b', 'LineWidth', 2)
+%     grid on
+%     ylim([-90 90])
     
-    figure('Name', 'gps velocity');
-    plot(time, Vn, 'b')
-    grid on
-    hold on;
-    plot(time, Ve, 'r')
-    plot(time, veln, '--r')
-    plot(time, vele, '--b')
+%     figure('Name', 'gps velocity');
+%     plot(time, Vn, 'b')
+%     grid on
+%     hold on;
+%     plot(time, Ve, 'r')
+%     plot(time, veln, '--b')
+%     plot(time, vele, '--r')
 end
