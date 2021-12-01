@@ -27,7 +27,7 @@ function [X, Y, Heading] = test_navigation(time, gamma1, gamma2, Gyro, Lat, Lon,
     kalman_state.pos = 5e-2;
     kalman_state.h = 1e-4;
     kalman_state.v = 3e-3;
-    kalman_state.dh = 3e-4;
+    kalman_state.dh = 3e-1;
     kalman_state.odo = 1e-2;%8e-3;
     
     
@@ -63,7 +63,7 @@ function [X, Y, Heading] = test_navigation(time, gamma1, gamma2, Gyro, Lat, Lon,
         if sensors.w1 ~= 0 || sensors.w2 ~= 0 || sensors.w3~= 0 || sensors.w4 ~= 0
             notMovedYet = false;
         end
-        sensors.gyro = Gyro(i);
+        sensors.gyro = -Gyro(i);
         validCoords = false;
         if Lat(i) > 53 && Lat(i) < 58
             if Lon(i) > 35 && Lon(i) < 40
@@ -129,10 +129,13 @@ function [X, Y, Heading] = test_navigation(time, gamma1, gamma2, Gyro, Lat, Lon,
     hold on;
     grid on
     plot(time, Head, 'k');
+    legend filter raw
     
     figure;
     plot(time, Anr, 'b')
     hold on;
     grid on
     plot(time, Rot, 'k');
+    plot(time, -Gyro, 'r');
+    legend filter raw gyro
 end
