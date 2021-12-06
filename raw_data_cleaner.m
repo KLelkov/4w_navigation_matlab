@@ -22,7 +22,10 @@ Odo2 = LocOdoR(gps_starter:nSim);
 Odo3 = LocOdo3(gps_starter:nSim);
 Odo4 = LocOdo4(gps_starter:nSim);
 Time = LocT(gps_starter:nSim)- LocT(gps_starter);
-clearvars -except Lat Lon Vn Ve Gyro Gamma1 Gamma2 Odo1 Odo2 Odo3 Odo4 Time
+navX = NavX(gps_starter:nSim);
+navY = NavY(gps_starter:nSim);
+navT = NavHeading(gps_starter:nSim);
+clearvars -except Lat Lon Vn Ve Gyro Gamma1 Gamma2 Odo1 Odo2 Odo3 Odo4 Time navX navY navT
 
 figure('Name', 'Gps preview');
 plot(Lon, Lat, 'b', 'LineWidth', 2);

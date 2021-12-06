@@ -21,9 +21,10 @@ len = length(time);
     sensors.gps_heading_error = 8e-2;
     
     %init Kalman state struct
+    offset = 160 * pi/180;
     kalman_state.X = zeros(9,1);
-    kalman_state.X(3) = 260*pi/180; % set initial heading
-%     kalman_state.X(3) = 65*pi/180; % set initial heading
+%     kalman_state.X(3) = 260*pi/180; % set initial heading
+    kalman_state.X(3) = offset; % set initial heading
     kalman_state.P = diag([100 100 10 10 10 10 10 10 10]);
     % errors:
     kalman_state.pos = 6e-2;
@@ -162,6 +163,19 @@ len = length(time);
     
     plot(time, Err, 'b', 'LineWidth', 2)
     grid on
+    
+    
+    [Xloc, Yloc] = ned2local(X, Y, offset);
+    [Nloc, Eloc] = ned2local(North, East, offset);
+    figure('Name', 'Trajectory in local frame')
+    plot(Yloc, Xloc, 'b', 'LineWidth', 2);
+    axis equal;
+    grid on;
+    hold on;
+    plot(Eloc, Nloc, 'k', 'LineWidth', 0.5);
+    xlabel('Y_g (East), m')
+    ylabel('X_g (North), m')
+    legend UKF GPS
     
 %     figure('Name', 'Heading Error');
 %     Herr = wrapToPi(Heading - Head);
