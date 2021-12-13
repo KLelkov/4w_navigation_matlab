@@ -2,7 +2,7 @@ gps_starter = 1;
 start_point_found = false;
 nSim = length(GpsStatus);
 i = 1;
-while (~ start_point_found)
+while (~ start_point_found) && (i <= nSim)
     if GpsStatus(i) >= 0
         gps_starter = i;
         start_point_found = true;

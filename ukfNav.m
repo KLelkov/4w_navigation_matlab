@@ -288,7 +288,7 @@ function state_prime = ukfNav(state, sensors, update)
         R = diag([sensors.odo_error sensors.odo_error sensors.odo_error sensors.odo_error]);
     end
     
-    if sqrt(sensors.gps_dx^2 + sensors.gps_dy^2) > 0.2 && update.gps == 1
+    if update.gps == 1 && sqrt(sensors.gps_dx^2 + sensors.gps_dy^2) > 0.2
         Z(end+1) = atan2(sensors.gps_dy, sensors.gps_dx);
         H(end+1, :) = [0, 0, 1, 0, 0, 0, 0, 0, 0];
         R(end+1, end+1) = sensors.gps_heading_error;

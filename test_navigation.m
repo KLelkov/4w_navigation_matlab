@@ -16,12 +16,12 @@ len = length(time);
     % init sensors struct
     sensors.gps_error_pos = 4e-1;
     sensors.gps_error_vel = 8e-1;
-    sensors.gyro_error = 8e-2;
-    sensors.odo_error = 1e0;%8e-1;
+    sensors.gyro_error = 1e-2;%8e-2;
+    sensors.odo_error = 15e-1;
     sensors.gps_heading_error = 8e-2;
     
     %init Kalman state struct
-    offset = 160 * pi/180;
+    offset = 0 * pi/180;
     kalman_state.X = zeros(9,1);
 %     kalman_state.X(3) = 260*pi/180; % set initial heading
     kalman_state.X(3) = offset; % set initial heading
@@ -30,8 +30,8 @@ len = length(time);
     kalman_state.pos = 6e-2;
     kalman_state.h = 4e-2;
     kalman_state.v = 3e-3;
-    kalman_state.dh = 5e-2;
-    kalman_state.odo = 1e-2;%8e-3;
+    kalman_state.dh = 1e-1;
+    kalman_state.odo = 3e-2;
     
     
     
@@ -40,22 +40,22 @@ len = length(time);
             sensors.dt = (time(i) - time(i-1)) / 1000;
         end
         % EDIT upper limit!
-        if w1(i) > 0.2 && w1(i) < 10
+        if w1(i) > 0.2 && w1(i) < 15
             sensors.w1 = w1(i);
         else
             sensors.w1= 0;
         end
-        if w2(i) > 0.2 && w2(i) < 10
+        if w2(i) > 0.2 && w2(i) < 15
             sensors.w2 = w2(i);
         else
             sensors.w2= 0;
         end
-        if w3(i) > 0.2 && w3(i) < 10
+        if w3(i) > 0.2 && w3(i) < 15
             sensors.w3 = w3(i);
         else
             sensors.w3= 0;
         end
-        if w4(i) > 0.2 && w4(i) < 10
+        if w4(i) > 0.2 && w4(i) < 15
             sensors.w4 = w4(i);
         else
             sensors.w4= 0;
@@ -67,6 +67,9 @@ len = length(time);
             notMovedYet = false;
         end
         sensors.gyro = -Gyro(i);
+        if sensors.w1 == 0 && sensors.w2 == 0 && sensors.w3 == 0 && sensors.w4 == 0
+            sensors.gyro = 0;
+        end
         validCoords = false;
         if Lat(i) > 53 && Lat(i) < 58
             if Lon(i) > 35 && Lon(i) < 40
@@ -81,8 +84,8 @@ len = length(time);
             if referenceNeeded
                 shiftLat = 0; shiftLon = 0;
                 if i > 1
-                    shiftLat = X(i-1)  / 111111 ;
-                    shiftLon = Y(i-1)  / (111111 * cosd(Lat(i))) ;
+                    shiftLat = X(i-1)  / 111111.1 ;
+                    shiftLon = Y(i-1)  / (111111.1 * cosd(Lat(i))) ;
                 end
                 referenceLat = Lat(i)  - shiftLat;
                 referenceLon = Lon(i)  - shiftLon;
@@ -91,13 +94,13 @@ len = length(time);
                 referenceLat = Lat(i);
                 referenceLon = Lon(i);
             end
-            sensors.gps_x = (Lat(i) - referenceLat) * 111111;
-            sensors.gps_y = (Lon(i) - referenceLon) * (111111 * cosd(Lat(i)));
+            sensors.gps_x = (Lat(i) - referenceLat) * 111111.1;
+            sensors.gps_y = (Lon(i) - referenceLon) * (111111.1 * cosd(Lat(i)));
             sensors.gps_dx = Vn(i);
             sensors.gps_dy = Ve(i);
         end
         if rem(i, 100) == 0
-            update.gps = 1;
+            update.gps = 0;
         else
             update.gps = 0;
         end
