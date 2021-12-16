@@ -17,7 +17,7 @@ len = length(time);
     sensors.gps_error_pos = 4e-1;
     sensors.gps_error_vel = 8e-1;
     sensors.gyro_error = 1e-2;%8e-2;
-    sensors.odo_error = 15e-1;
+    sensors.odo_error = 1e-0;
     sensors.gps_heading_error = 8e-2;
     
     %init Kalman state struct
