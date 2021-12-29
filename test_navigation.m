@@ -5,7 +5,7 @@ len2 = floor(len/5);
     referenceNeeded = true;
     notMovedYet = true;
     validCoords = false;
-    sensors.dt = 0.01;
+    sensors.dt = 0.005;
     referenceLat = 0;
     referenceLon = 0;
     X = zeros(len2, 1);
@@ -23,7 +23,7 @@ len2 = floor(len/5);
     sensors.gps_heading_error = 8e-2;
     
     %init Kalman state struct
-    offset = 0 * pi/180;
+    offset = 155 * pi/180;
     kalman_state.X = zeros(9,1);
 %     kalman_state.X(3) = 260*pi/180; % set initial heading
     kalman_state.X(3) = offset; % set initial heading
@@ -87,17 +87,29 @@ len2 = floor(len/5);
                 referenceNeeded = true;
             end
             if referenceNeeded
+                xproj = -0.5;
+                yproj = 0;
+                if cnt >1
+                    xproj = -0.5 * cos(Heading(cnt-1)) - 0.00 * sin(Heading(cnt-1));
+                    yproj = -0.5 * sin(Heading(cnt-1)) + 0.00 * cos(Heading(cnt-1));
+                end
                 shiftLat = 0; shiftLon = 0;
-                if i > 1
-                    shiftLat = X(i-1)  / 111111.1 ;
-                    shiftLon = Y(i-1)  / (111111.1 * cosd(Lat(i))) ;
+                if i > 1 && cnt > 1
+                    shiftLat = X(cnt-1)  / 111111.1 - xproj / 111111.1;
+                    shiftLon = (Y(cnt-1) - yproj)  / (111111.1 * cosd(Lat(i))) ;
                 end
                 referenceLat = Lat(i)  - shiftLat;
                 referenceLon = Lon(i)  - shiftLon;
             end
             if notMovedYet
-                referenceLat = Lat(i);
-                referenceLon = Lon(i);
+                xproj = -0.5;
+                yproj = 0;
+                if cnt >1
+                    xproj = -0.5 * cos(Heading(cnt-1)) - 0.00 * sin(Heading(cnt-1));
+                    yproj = -0.5 * sin(Heading(cnt-1)) + 0.00 * cos(Heading(cnt-1));
+                end
+                referenceLat = Lat(i)  - xproj / 111111.1;
+                referenceLon = Lon(i) - yproj  / (111111.1 * cosd(Lat(i)));
             end
             sensors.gps_x = (Lat(i) - referenceLat) * 111111.1;
             sensors.gps_y = (Lon(i) - referenceLon) * (111111.1 * cosd(Lat(i)));
@@ -105,7 +117,7 @@ len2 = floor(len/5);
             sensors.gps_dy = Ve(i);
         end
         if rem(i, 100) == 0
-            update.gps = 0;
+            update.gps = 1;
         else
             update.gps = 0;
         end
