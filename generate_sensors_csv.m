@@ -1,0 +1,1 @@
+dlmwrite('sensors_hex.csv', [Time, Gamma1, Gamma2, Gyro, Lat, Lon, Vn, Ve, Odo1, Odo2, Odo3, Odo4], 'delimiter', ',', 'precision', 9);

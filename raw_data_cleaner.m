@@ -25,7 +25,8 @@ Time = LocT(gps_starter:nSim)- LocT(gps_starter);
 navX = NavX(gps_starter:nSim);
 navY = NavY(gps_starter:nSim);
 navT = NavHeading(gps_starter:nSim);
-clearvars -except Lat Lon Vn Ve Gyro Gamma1 Gamma2 Odo1 Odo2 Odo3 Odo4 Time navX navY navT
+gpsStatus = GpsStatus(gps_starter:nSim);
+clearvars -except Lat Lon Vn Ve Gyro Gamma1 Gamma2 Odo1 Odo2 Odo3 Odo4 Time navX navY navT gpsStatus
 
 figure('Name', 'Gps preview');
 plot(Lon, Lat, 'b', 'LineWidth', 2);

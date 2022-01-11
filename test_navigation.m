@@ -16,11 +16,11 @@ len2 = floor(len/5);
     
     
     % init sensors struct
-    sensors.gps_error_pos = 4e-1;
+    sensors.gps_error_pos = 2e-1;
     sensors.gps_error_vel = 8e-1;
-    sensors.gyro_error = 1e-2;%8e-2;
-    sensors.odo_error = 1e-0;
-    sensors.gps_heading_error = 8e-2;
+    sensors.gyro_error = 2e-2;%8e-2;
+    sensors.odo_error = 2.8e-0;
+    sensors.gps_heading_error = 6e-2;
     
     %init Kalman state struct
     offset = 155 * pi/180;
@@ -33,7 +33,7 @@ len2 = floor(len/5);
     kalman_state.h = 4e-2;
     kalman_state.v = 3e-3;
     kalman_state.dh = 1e-1;
-    kalman_state.odo = 3e-2;
+    kalman_state.odo = 8e-2;
     
     cnt = 0;
     
@@ -153,7 +153,7 @@ len2 = floor(len/5);
     plot(time2, Heading, 'b')
     hold on;
     grid on
-%     plot(time2, Head, 'k');
+    plot(time, Head, 'k');
     legend filter raw
     title 'Heading'
     
@@ -162,8 +162,8 @@ len2 = floor(len/5);
     hold on;
     grid on
 %     plot(time2, Rot, 'k');
-%     plot(time2, -Gyro, 'r');
-    legend filter raw gyro
+    plot(time, -Gyro, 'r');
+    legend filter gyro
     
 %     figure;
 %     plot(time2, Anr, 'b')
